@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Base ===== */
+@layer base {
+  * { @apply transition ease-in-out duration-300; }
+  * {
+    transition: ease-in-out duration-300;
+  }
+  body { @apply bg-gray-50 text-slate-800; }
+  .dark body { @apply bg-slate-900 text-slate-100; }
+}
+
+/* ===== Componentes reutilizáveis ===== */
+@layer components {
+  /* Sidebar */
+  .sidebar { @apply bg-slate-900 text-slate-100 min-h-screen p-4 shadow-soft; }
+  .sidebar-toggle { @apply mb-6 flex items-center justify-end w-full text-slate-400 hover:text-white; }
+  .logo { @apply mb-4 text-lg font-semibold tracking-tight; }
+
+  .nav-link {
+    @apply flex items-center gap-3 p-2 rounded-xl transition select-none text-slate-200 hover:bg-slate-800/70;
+  }
+  .nav-link-active {
+    @apply bg-slate-700 text-white shadow-inner;
+  }
+  .nav-icon { @apply shrink-0; }
+  .nav-text { @apply whitespace-nowrap overflow-hidden; }
+
+  /* Área principal */
+  .main { @apply flex-1 min-h-screen; }
+  .main-inner { @apply p-6; }
+
+  /* Cartões */
+  .card { @apply bg-white rounded-2xl border border-slate-200 shadow-soft p-5; }
+  .card-title { @apply text-sm font-medium text-slate-500; }
+  .card-value { @apply mt-1 text-2xl font-bold text-slate-800; }
+
+  /* Tabela */
+  .table { @apply w-full border-collapse; }
+  .th { @apply bg-slate-100 text-left text-sm font-semibold px-4 py-2 border border-slate-200; }
+  .td { @apply text-sm px-4 py-2 border border-slate-200; }
+  .tr-hover { @apply hover:bg-slate-50; }
+
+  /* Form */
+  .label { @apply block text-sm font-medium text-slate-700; }
+  .input {
+    @apply mt-1 w-full border border-slate-300 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white;
+  }
+  .btn { @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium bg-blue-600 text-white hover:bg-blue-700 active:scale-[.98] transition; }
+  
+}
