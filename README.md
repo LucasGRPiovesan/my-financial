@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# my-financial
-=======
 # Finance Management Dashboard
 
 A modern, responsive financial management dashboard built with **React**, **TypeScript**, **Tailwind CSS**, **Headless UI**, and **Chart.js**. This panel allows users to manage accounts, banks, transactions, and investments in an intuitive and visually appealing interface.
@@ -75,4 +72,3 @@ src/
 ├── styles/             # Tailwind CSS configuration and base styles
 └── App.tsx             # Main application entry
 ```
->>>>>>> 20dd469 (first commit)
