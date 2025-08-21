@@ -1,26 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, Tab } from '@headlessui/react'
 import { Pencil, Plus, X } from 'lucide-react'
 import TopBar from '../components/Topbar'
+import { BankService } from '../services/BankService'
 
 type Bank = {
   id: number
   name: string
-  logoUrl: string
-  items: string[],
-  balance?: number
+  code?: string
+  logoUrl?: string
+  // items: string[],
+  balance: number
 }
 
 // Dados falsos
-const initialBanks: Bank[] = [
-  { id: 1, name: 'Banco do Brasil', logoUrl: 'https://logo.clearbit.com/bb.com.br', items: ['CDB', 'Poupança'], balance: 15000.50 },
-  { id: 2, name: 'Nubank', logoUrl: 'https://logo.clearbit.com/nubank.com.br', items: ['Conta Digital', 'Investimentos'], balance: 8200.75 },
-  { id: 3, name: 'Itaú', logoUrl: 'https://logo.clearbit.com/itau.com.br', items: ['CDB', 'LCI', 'LCI'], balance: 15400.20 },
-  { id: 4, name: 'Santander', logoUrl: 'https://logo.clearbit.com/santander.com.br', items: ['Poupança', 'Fundos'], balance: 7300.00 },
-]
+// const initialBanks: Bank[] = [
+//   { id: 1, name: 'Banco do Brasil', logoUrl: 'https://logo.clearbit.com/bb.com.br', items: ['CDB', 'Poupança'], balance: 15000.50 },
+//   { id: 2, name: 'Nubank', logoUrl: 'https://logo.clearbit.com/nubank.com.br', items: ['Conta Digital', 'Investimentos'], balance: 8200.75 },
+//   { id: 3, name: 'Itaú', logoUrl: 'https://logo.clearbit.com/itau.com.br', items: ['CDB', 'LCI', 'LCI'], balance: 15400.20 },
+//   { id: 4, name: 'Santander', logoUrl: 'https://logo.clearbit.com/santander.com.br', items: ['Poupança', 'Fundos'], balance: 7300.00 },
+// ]
 
 export default function Banks() {
-  const [banks, setBanks] = useState<Bank[]>(initialBanks)
+  const [banks, setBanks] = useState<Bank[]>([])
   const [open, setOpen] = useState(false)
   const [editingBank, setEditingBank] = useState<Bank | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -28,7 +30,7 @@ export default function Banks() {
 
   // Paginação
   const totalPages = Math.ceil(banks.length / itemsPerPage)
-  const paginatedBanks = banks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  // const paginatedBanks = banks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   const openModal = (bank?: Bank) => {
     if (bank) setEditingBank(bank)
@@ -52,6 +54,19 @@ export default function Banks() {
     closeModal()
   }
 
+  const formatBalance = (balance: number) => {
+    return (balance / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+  }
+
+  useEffect(() => {
+    const fetchBanks = async () => {
+      const banksData = await BankService.listBanks()
+      setBanks(banksData)
+    }
+
+    fetchBanks();
+  }, []);
+
   return (
     <div className="space-y-6">
 
@@ -60,13 +75,13 @@ export default function Banks() {
 
       {/* Cards dos bancos */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        {initialBanks.map((bank) => (
+        {banks.map((bank) => (
           <div key={bank.id} className="bg-white shadow-md rounded-lg p-4 flex items-center gap-3">
             <img src={bank.logoUrl} alt={bank.name} className="w-10 h-10 object-contain"/>
             <div>
               <div className="text-gray-500 text-sm">{bank.name}</div>
               <div className="text-lg font-bold">
-                R$ {bank.balance?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {formatBalance(bank.balance)}
               </div>
             </div>
           </div>
@@ -90,26 +105,27 @@ export default function Banks() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Logo</th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Banco</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Itens</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Código</th>
+              {/* <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Código</th> */}
               <th className="px-4 py-2 text-right text-sm font-medium text-gray-500">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {paginatedBanks.map((bank) => (
+            {banks.map((bank) => (
               <tr key={bank.id}>
-                <td className="px-4 py-2 whitespace-nowrap">
+                <td className="flex items-center gap-3 px-4 py-2 whitespace-nowrap">
                   <img src={bank.logoUrl} alt={bank.name} className="w-10 h-10 object-contain"/>
+                  <span>{bank.name}</span>
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap">{bank.name}</td>
-                <td className="px-4 py-2 whitespace-nowrap">
+                <td className="px-4 py-2 whitespace-nowrap">{bank.code}</td>
+                {/* <td className="px-4 py-2 whitespace-nowrap">
                   {bank.items.map((item, idx) => (
                     <span key={idx} className="px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-800 rounded-full mr-1">
                       {item}
                     </span>
                   ))}
-                </td>
+                </td> */}
                 <td className="px-4 py-2 whitespace-nowrap text-right">
                   <button onClick={() => openModal(bank)} className="text-blue-500 hover:text-blue-700 flex items-center gap-1">
                     <Pencil size={16} /> Editar
